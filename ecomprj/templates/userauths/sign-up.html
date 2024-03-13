@@ -1,0 +1,135 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<main class="main">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:index' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Login</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+
+    {% load static %}
+    <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17"
+        style="background-image: url('{% static 'assets/images/backgrounds/login-bg.jpg' %}')">
+
+        <div class="container">
+
+            <div class="form-box">
+                {% if form.errors %}
+                <div class="alert alert-danger" id="form-errors">
+                    <strong>{{ form.errors }}</strong>
+                </div>
+                {% endif %}
+                <div class="form-tab">
+                    <ul class="nav nav-pills nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link {% if login_active %}active{% endif %}" id="register-tab-2"
+                                data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2"
+                                aria-selected="true">Register</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+
+                        <!-- Sign-up form content -->
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <!-- Username Field -->
+                            <div class="form-group row">
+                                <label for="register-username" class="col-md-6 col-form-label">Your username *</label>
+                                <div class="col-md-6">
+                                    {{ form.username }}
+                                </div>
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="form-group row">
+                                <label for="register-email" class="col-md-6 col-form-label">Your email address *</label>
+                                <div class="col-md-6">
+                                    {{ form.email }}
+                                </div>
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="form-group row">
+                                <label for="register-password1" class="col-md-6 col-form-label">Password *</label>
+                                <div class="col-md-6">
+                                    {{ form.password1 }}
+                                </div>
+                            </div>
+
+                            <!-- Confirm Password Field -->
+                            <div class="form-group row">
+                                <label for="register-password2" class="col-md-6 col-form-label">Confirm Password
+                                    *</label>
+                                <div class="col-md-6">
+                                    {{ form.password2 }}
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-footer">
+                                <div class="offset-md-3 col-md-9">
+                                    <button type="submit" class="btn btn-outline-primary-2">
+                                        <span>SIGN UP</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="form-choice">
+                            <p class="text-center">or sign in with</p>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <a href="#" class="btn btn-login btn-g">
+                                        <i class="icon-google"></i>
+                                        Login With Google
+                                    </a>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a href="#" class="btn btn-login btn-f">
+                                        <i class="icon-facebook-f"></i>
+                                        Login With Facebook
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- End .form-tab -->
+            </div><!-- End .form-box -->
+        </div><!-- End .container -->
+    </div><!-- End .login-page section-bg -->
+</main><!-- End .main -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    function hideFormErrors() {
+        setTimeout(function () {
+            document.getElementById('form-errors').style.display = 'none';
+        }, 5000); // 5000 milliseconds = 5 seconds
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Hide form errors initially
+        hideFormErrors();
+
+        // Listen for tab click events
+        document.querySelectorAll('.nav-link').forEach(function (tabLink) {
+            tabLink.addEventListener('click', function () {
+                // Hide form errors when switching tabs
+                document.getElementById('form-errors').style.display = 'none';
+            });
+        });
+    });
+</script>
+
+{% endblock content %}
