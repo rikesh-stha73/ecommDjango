@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from userauths.forms import UserRegisterForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib import messages
 from django.conf import settings
 
@@ -26,36 +26,42 @@ def register_view(request):
 
     context = {
         'form': form,
-        'login_active': False,
     }
 
     return render(request, "userauths/sign-up.html", context)
-
 
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("core:index")
     
+    User = get_user_model()
+
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
 
         try:
-            user = User.objects.get(email= email)
-        except:
-            messages.warning(request, f"User with {email} does not exist")
+            user = User.objects.get(email=email)
+            user = authenticate(request, email=email, password=password)
 
-        user =authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, "You logged in successfully.")
+                return redirect("core:index")
+            else:
+                messages.warning(request, "Invalid email or password.")
+    
+        except User.DoesNotExist:
+            messages.warning(request, f"User with email {email} does not exist")
+            return redirect("userauths:sign-in")  
 
-        if user is not None:
-            login(request, user)
-            messages.success(request, "You Logged in.")
-            return redirect("core:index")
-        else:
-            messages.warning(req, "User Doesnot exist")
+       
+    return render(request, "userauths/sign-in.html")
 
-        context = {
-            'login_active': True,
-        }
 
-    return render(request,"userauths/sign-up.html", context )
+def logout_view(request):
+    logout(request)
+    messages.success(request, "You logged out successfully.")
+    return redirect("userauths:sign-in")
+    
+# end def
